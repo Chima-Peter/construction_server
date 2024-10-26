@@ -2,6 +2,7 @@ import passport from "passport";
 import PassportLocal from 'passport-local'
 import bcrypt from 'bcryptjs'
 import { PrismaClient } from "@prisma/client";
+import { UserType } from "../@types/db";
 
 const LocalStrategy =PassportLocal.Strategy
 const prisma = new PrismaClient()
@@ -61,7 +62,7 @@ passport.deserializeUser( async(id: number, done) => {
         })
         // if user exists, return user object
         if (user) {
-            return done(null, user)
+            return done(null, user as UserType)
         } else {
             // else return false
             return done(null, false)

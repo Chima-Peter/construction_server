@@ -30,8 +30,7 @@ const rateLimiter = (req: Request, res: Response, next: NextFunction): any => {
         req.session.rate = { count: 1, firstRequest: Date.now() };
     }
 
-    // Proceed to the next middleware
-    next();
+    next(); // if no rate limiting issues, continue to the next middleware or route handler
 };
 
 export default rateLimiter;

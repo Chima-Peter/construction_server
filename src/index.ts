@@ -8,7 +8,8 @@ import cors from 'cors';
 import rateLimiter from './middleware/rate_limiter';
 import authRouter from './routes/auth';
 import errorHandler from './middleware/error_middleware';
-import './config/express-session' // add type extension for express-session module to support session data
+import './@types/express-session' // add type extension for express-session module to support adding data to session
+import './config/passport'; // Passport configuration
 
 dotenv.config(); // Load environment variables
 
