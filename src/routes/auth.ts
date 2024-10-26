@@ -61,7 +61,7 @@ authRouter.post('/signin',validateSignIn, (req: Request, res: Response, next: Ne
     // authenticate user using passport
     passport.authenticate('local', (err: any, user: UserType, info: { message: any }) =>{
         if (err) {
-            const error = new Error('An error occurred while attempting to authenticate user. Please try again later. 1')
+            const error = new Error('An error occurred while attempting to authenticate user. Please try again later.')
             return next(error) // pass error to middleware
         }
 
