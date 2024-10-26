@@ -8,6 +8,5 @@ declare module 'express-session' {
             count: number;
             firstRequest: number;
         },
-        userID?: string
     }
 }

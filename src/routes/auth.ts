@@ -6,7 +6,7 @@ import checkEmail from '../query/checkEmail'
 import validateSignIn from '../utils/auth/validate_signin'
 import passport from 'passport'
 import { UserType } from '../@types/db'
-import HttpError from "../utils/http_error";
+import HttpError from "../config/http_error";
 
 // Set up routing from auth
 const authRouter = express.Router()
@@ -34,17 +34,19 @@ authRouter.post('/signup', validateSignUp, async (req: Request, res: Response, n
             // add user to database
             const user = await insertUser(req.body)
             
-            // add user id to session data
-            req.session.userID = String(user?.id)
-
-            // send json body for successful user login
-            res.json({
-                responseMsg: 'User created successfully!'
+            // log user in once sign up process is complete
+            req.login(user, (err) => {
+                if (err) {
+                    const error = new HttpError('User account has been created successfully. Please log in.', 200)
+                    return next(error);
+                }
+                return res.json({
+                    responseMsg: 'Successfully signed in'
+                })
             })
     } catch (err) {
-        // Pass error msg and status to error middleware
-        const error = new Error('An error occurred while creating user. Please try again later.')
-        next(error)
+        // Pass error msg to error middleware
+        next(new Error('An error occurred while creating user. Please try again later.'))
     }
 })
 
@@ -80,9 +82,22 @@ authRouter.post('/signin',validateSignIn, (req: Request, res: Response, next: Ne
             }
             return res.json({
                 responseMsg: 'Successfully signed in'
-            }) 
+            })
         });
     })(req, res, next)
+})
+
+
+// user sign out route
+authRouter.post('/signout', (req: Request, res: Response, next: NextFunction) => {
+    req.logout((err) => {
+        if (err) {
+            return next(new Error('An error occurred while attempting to log out user. Please try again later'))
+        } // pass error to error handling middleware
+        res.json({
+            responseMsg: 'Successfully signed out'
+        })
+    })
 })
 
 

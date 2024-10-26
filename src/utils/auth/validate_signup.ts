@@ -1,5 +1,5 @@
 import { body } from 'express-validator'
-import HttpError from "../../utils/http_error";
+import HttpError from "../../config/http_error";
 
 // validate user sign up
 const validateSignUp = [

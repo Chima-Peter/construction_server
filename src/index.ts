@@ -8,20 +8,9 @@ import cors from 'cors';
 import rateLimiter from './middleware/rate_limiter';
 import authRouter from './routes/auth';
 import errorHandler from './middleware/error_middleware';
+import './config/express-session' // add type extension for express-session module to support session data
 
 dotenv.config(); // Load environment variables
-
-// add type extension for express-session module to support session data. Won't work if written elsewhere
-declare module 'express-session' {
-    interface SessionData {
-        rate?: {
-            count: number;
-            firstRequest: number;
-        },
-        userID?: string
-    }
-}
-
 
 const app = express();
 const sessionStore = connectPgSimple(session);

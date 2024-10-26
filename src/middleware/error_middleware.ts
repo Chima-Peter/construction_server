@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import HttpError from "../utils/http_error";
+import HttpError from "../config/http_error";
 
 const errorHandler = (err: Error, _req: Request, res: Response, _next: NextFunction) => {
     console.error(err.stack); // Log the error stack to the console

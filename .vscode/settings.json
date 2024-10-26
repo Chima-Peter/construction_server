@@ -5,6 +5,7 @@
         "firstname",
         "lastname",
         "resave",
-        "signin"
+        "signin",
+        "signout"
     ]
 }
