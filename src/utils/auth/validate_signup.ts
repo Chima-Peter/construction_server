@@ -1,29 +1,30 @@
 import { body } from 'express-validator'
+import HttpError from "../../utils/http_error";
 
 // validate user sign up
 const validateSignUp = [
     body('firstname')
     .notEmpty()
-    .withMessage("Firstname field can't be empty")
+    .withMessage("First name field can't be empty")
     .trim()
     .isLength({ min: 2 })
     .withMessage("First name can't be just two character")
     .custom((value) => {
         if (!/^[A-Za-z\s]+$/.test(value)) {
-            throw new Error('First name can contain only alphabets')
+            throw new HttpError('First name can contain only alphabets', 400)
         }
         return true
     }),
 
     body('lastname')
     .notEmpty()
-    .withMessage("Firstname field can't be empty")
+    .withMessage("Last name field can't be empty")
     .trim()
     .isLength({ min: 2 })
-    .withMessage("First name can't be just two character")
+    .withMessage("Last name can't be just two character")
     .custom((value) => {
         if (!/^[A-Za-z\s]+$/.test(value)) {
-            throw new Error('First name can contain only alphabets')
+            throw new HttpError('Last name can contain only alphabets', 400)
         }
         return true
     }),

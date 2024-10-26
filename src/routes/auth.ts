@@ -1,45 +1,89 @@
 import express, { Request, Response, NextFunction } from 'express'
 import { validationResult } from 'express-validator'
 import validateSignUp from '../utils/auth/validate_signup'
+import insertUser from '../query/insert_signup'
+import checkEmail from '../query/checkEmail'
+import validateSignIn from '../utils/auth/validate_signin'
+import passport from 'passport'
+import { UserType } from '../@types/db'
+import HttpError from "../utils/http_error";
 
 // Set up routing from auth
-const router = express.Router()
+const authRouter = express.Router()
 
-router.post('/signup', validateSignUp, async (req: Request, res: Response, next: NextFunction) => {
+// User sign up route
+authRouter.post('/signup', validateSignUp, async (req: Request, res: Response, next: NextFunction) : Promise<any> => {
 
     // check if errors were found during input validation
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-        res.status(400).json({ 
-            error: errors
-        }) // return the errors detected
+        // pass the error to next middleware
+        const error = new HttpError(errors.array()[0].msg, 400)
+        return next(error)
     }
-    // ADD USER DATA TO DATABASE
+    
+    // check if email is already taken
+    const emailCheck = await checkEmail(req.body.email)
+    if (emailCheck) {
+        return res.status(400).json({
+            responseMsg: 'Email is already taken!'
+        })
+    }
 
     try {
-        req.login(user, (err) => {
-            if (err) {
-                next(err); // pass error to next middleware
-            }
+            // add user to database
+            const user = await insertUser(req.body)
+            
+            // add user id to session data
+            req.session.userID = String(user?.id)
 
-            // if login is successful, respond with success message
-            res.status(200).json({
-                responseMsg: 'Success!'
+            // send json body for successful user login
+            res.json({
+                responseMsg: 'User created successfully!'
             })
-        })
     } catch (err) {
-        // Handle taken username error
-        if (err.code == '23505') {
-            res.status(401).json({
-                responseMsg: 'Username has already been taken'
-            })
-        }
-
-         // Handle other unexpected errors
-        return res.status(500).json({
-            responseMsg: 'An unexpected error occurred'
-        })
+        // Pass error msg and status to error middleware
+        const error = new Error('An error occurred while creating user. Please try again later.')
+        next(error)
     }
 })
 
-export default router
+// user sign in route
+authRouter.post('/signin',validateSignIn, (req: Request, res: Response, next: NextFunction) : any => {
+    // check if errors were found during input validation
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        // pass the error to next middleware
+        const error = new HttpError(errors.array()[0].msg, 400)
+        return next(error)
+    }
+
+    // authenticate user using passport
+    passport.authenticate('local', (err: any, user: UserType, info: { message: any }) =>{
+        if (err) {
+            const error = new Error('An error occurred while attempting to authenticate user. Please try again later. 1')
+            return next(error) // pass error to middleware
+        }
+
+        // return error message if email or password is incorrect
+        if (!user) {
+            return res.status(400).json({
+                responseMsg: info?.message || 'Authentication failed! Incorrect email or password'
+            }) 
+        }
+
+        // user successfully logged in
+        req.login(user, (err) => {
+            if (err) {
+                const error = new Error('An error occurred during login process. Try again later')
+                return next(error);
+            }
+            return res.json({
+                responseMsg: 'Successfully signed in'
+            }) 
+        });
+    })(req, res, next)
+})
+
+
+export default authRouter

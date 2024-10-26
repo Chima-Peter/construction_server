@@ -17,7 +17,7 @@ const rateLimiter = (req: Request, res: Response, next: NextFunction): any => {
             
             // If the count exceeds the maximum allowed, send a 429 status
             if (rate.count > MAX_COUNT) {
-                return res.status(429).json({ message: 'Too many requests, try again later.' });
+                return res.status(429).json({ responseMsg: 'Too many requests, try again later.' });
             }
         } else {
 

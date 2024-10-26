@@ -6,11 +6,26 @@ import passport from 'passport';
 import connectPgSimple from 'connect-pg-simple';
 import cors from 'cors';
 import rateLimiter from './middleware/rate_limiter';
+import authRouter from './routes/auth';
+import errorHandler from './middleware/error_middleware';
 
 dotenv.config(); // Load environment variables
 
+// add type extension for express-session module to support session data. Won't work if written elsewhere
+declare module 'express-session' {
+    interface SessionData {
+        rate?: {
+            count: number;
+            firstRequest: number;
+        },
+        userID?: string
+    }
+}
+
+
 const app = express();
 const sessionStore = connectPgSimple(session);
+
 
 // Middleware to handle CORS
 app.use(cors({
@@ -52,8 +67,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Call your routes here
-// Example: app.use('/api', yourRoutes);
+
+// ROUTING
+app.use('/api/v1', authRouter) // authentication routes
+
+
+// Error handling middleware
+app.use(errorHandler)
 
 // Start the server
 const PORT = process.env.PORT || 3000;
