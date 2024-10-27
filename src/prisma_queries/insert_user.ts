@@ -18,7 +18,7 @@ const insertUser = async (body: any) => {
         });
         return newUser;
     } catch(err) {
-        // on error, print it and throw an error
+        // throw the error to the error-handling middleware
         throw new Error("An error occurred while creating user. Please try again later.");
     }
 }

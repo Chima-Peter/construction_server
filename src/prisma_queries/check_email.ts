@@ -10,9 +10,9 @@ const checkEmail = async (email: string) => {
                 email: email
             }
         })
-        return !!dbEmail
+        return !!dbEmail // return true if email exists, else false
     } catch (error) {
-        // exit on error
+        // throw the error to the error-handling middleware
         throw new Error('An error occurred during authentication. Please try again later.');
     }
 }
