@@ -132,7 +132,7 @@ This API provides endpoints for user authentication and password management for 
 
 ## Notes
 
-- This API uses sessions and cookies for user authentication. The said cookies are stored securely and only accessible to the server. They are stored in the user's browser under the name `construction`.
+- This API uses sessions and cookies for user authentication. The said cookies are stored securely and only accessible to the server. They are stored in the user's browser.
 
 - This API has a rate limit of 100 requests per 15 minutes to prevent abuse.
 
