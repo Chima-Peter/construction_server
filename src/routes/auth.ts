@@ -16,8 +16,8 @@ import resetPassword from '../prisma_queries/reset_password'
 // Set up routing from auth
 const authRouter = express.Router()
 
-// User register route - input is first validated, then checked for errors before any other operations.
-authRouter.post('/register', validateSignUp, checkInputValidation, async (req: Request, res: Response, next: NextFunction) : Promise<any> => {
+// User signup route - input is first validated, then checked for errors before any other operations.
+authRouter.post('/signup', validateSignUp, checkInputValidation, async (req: Request, res: Response, next: NextFunction) : Promise<any> => {
     // check if email is already taken
     const emailCheck = await checkEmail(req.body.email)
     if (emailCheck) {
@@ -35,7 +35,7 @@ authRouter.post('/register', validateSignUp, checkInputValidation, async (req: R
             const error = new HttpError('User account has been created successfully. Please log in.', 200)
             return next(error);
         }
-        return res.json({
+        return res.status(201).json({
             responseMsg: 'Successfully signed in'
         })
     })
@@ -86,16 +86,16 @@ authRouter.post('/logout', (req: Request, res: Response, next: NextFunction) => 
 
 
 // user send email route. input is first validated, then checked for errors before any other operations.
-authRouter.post('/send-mail', validateSendMail, checkInputValidation, sendMail({
+authRouter.post('/reset-password', validateSendMail, checkInputValidation, sendMail({
     subject: 'Password Reset Link', // controlling the values we pass to send mail
     content: htmlContent,
-    responseMsg: 'Password reset link has been sent to your email',
+    successMsg: `Password reset link has been sent to user at `,
     errorMsg: 'An error occurred while sending password reset link. Please try again later'
 }))
 
 
 // user forgot password route - input is first validated, then checked for errors before any other operations.
-authRouter.post('/forgot-password', validatePasswordReset, checkInputValidation, async (req: Request, res: Response) : Promise<any> => {
+authRouter.put('/reset', validatePasswordReset, checkInputValidation, async (req: Request, res: Response) : Promise<any> => {
 
     // check if email exists
     const emailCheck = await checkEmail(req.body.email)

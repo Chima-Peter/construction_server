@@ -59,7 +59,7 @@ app.use(passport.session());
 
 
 // ROUTING
-app.use('/api/v1', authRouter) // authentication routes
+app.use('/api/v1/auth', authRouter) // authentication routes
 
 
 // Error handling middleware

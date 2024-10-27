@@ -6,7 +6,7 @@ import { SendMailType } from '../@types/middleware_types'
 dotenv.config() // load env variables
 
 // create a middleware factory so we can control the type of subject, content and template for the email content
-const sendMail = ({subject, content, responseMsg, errorMsg} : SendMailType)  => {
+const sendMail = ({subject, content, successMsg, errorMsg} : SendMailType)  => {
     // middleware to send mail to user's email
     return (req: Request, res: Response, next: NextFunction) => {
 
@@ -36,8 +36,9 @@ const sendMail = ({subject, content, responseMsg, errorMsg} : SendMailType)  => 
                 // pass the error to error-handling middleware
                 return next(new Error(errorMsg))
             }
+            let msg = successMsg + req.body.email // append user's email to response message
             return res.json({
-                responseMsg
+                responseMsg: msg // send response message to user
             })
         })
     }

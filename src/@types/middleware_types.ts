@@ -2,7 +2,7 @@
 interface SendMailType {
     subject: string,
     content: string,
-    responseMsg: string,
+    successMsg: string,
     errorMsg: string
 }
 
