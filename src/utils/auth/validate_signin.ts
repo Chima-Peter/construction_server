@@ -11,12 +11,8 @@ const validateSignIn = [
 
     body('password')
     .notEmpty()
-    .withMessage("Password can't be empty")
+    .withMessage("Password field can't be empty")
     .trim()
-    .isLength({ min: 8 })
-    .withMessage('Password must be at least 8 characters')
-    .isStrongPassword()
-    .withMessage("Password is too weak")
 ]
 
 export default validateSignIn

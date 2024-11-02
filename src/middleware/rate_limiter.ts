@@ -1,13 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
+import { SessionData } from 'express-session';
 
 // Middleware to control rate limiting
 const rateLimiter = (req: Request, res: Response, next: NextFunction): any => {
-    const MAX_COUNT = 100; // Maximum number of requests allowed
+    const MAX_COUNT = 10; // Maximum number of requests allowed
     const TIME_WINDOW = 15 * 60 * 1000; // Time window in milliseconds (15 minutes)
+    const session = req.session as SessionData; // Get the session object
 
     // Check if rate limiting data exists in session
-    if (req.session.rate) {
-        const rate = req.session.rate; 
+    if (session.rate) {
+        const rate = session.rate; 
         const currentTime = Date.now(); // Get the current time
         const elapsedTime = currentTime - rate.firstRequest; // Calculate time elapsed since first request
 
@@ -22,12 +24,12 @@ const rateLimiter = (req: Request, res: Response, next: NextFunction): any => {
         } else {
 
             // If the elapsed time exceeds the time window, reset count and set a new timer
-            req.session.rate = { count: 1, firstRequest: currentTime };
+            session.rate = { count: 1, firstRequest: currentTime };
         }
     } else {
 
         // If no rate data exists in session, create a new rate limiting entry
-        req.session.rate = { count: 1, firstRequest: Date.now() };
+        session.rate = { count: 1, firstRequest: Date.now() };
     }
 
     next(); // if no rate limiting issues, continue to the next middleware or route handler

@@ -39,7 +39,7 @@ const htmlContent = `<!DOCTYPE html>
                     <table role="presentation" class="email-container">
                         <tr>
                         <td class="email-header">
-                            Password Reset Request
+                            Password Reset Link
                         </td>
                         </tr>
                         <tr>
@@ -53,7 +53,7 @@ const htmlContent = `<!DOCTYPE html>
                         </tr>
                         <tr>
                         <td class="email-footer">
-                            &copy; 2024 Your Company. All rights reserved.
+                            &copy; 2024 Mobs Construction. All rights reserved.
                         </td>
                         </tr>
                     </table>

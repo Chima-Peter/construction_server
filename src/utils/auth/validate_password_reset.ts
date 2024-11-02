@@ -6,12 +6,12 @@ let PASSWORD = ''
 const validatePasswordReset = [
    body('password')
     .notEmpty()
-    .withMessage("Password can't be empty")
+    .withMessage("Password field can't be empty")
     .trim()
     .isLength({ min: 8 })
     .withMessage('Password must be at least 8 characters')
     .isStrongPassword()
-    .withMessage("Password is too weak")
+    .withMessage("Password is too weak!")
     .custom((value) => {
         PASSWORD = value
         return true
@@ -19,12 +19,8 @@ const validatePasswordReset = [
 
     body('confirm-password')
     .notEmpty()
-    .withMessage("Password can't be empty")
+    .withMessage("Confirm password field can't be empty")
     .trim()
-    .isLength({ min: 8 })
-    .withMessage('Password must be at least 8 characters')
-    .isStrongPassword()
-    .withMessage("Password is too weak")
     .custom((value) => {
         if (PASSWORD !== value) {
             throw new HttpError ("Your passwords don't match", 400)

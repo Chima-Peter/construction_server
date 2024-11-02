@@ -5,11 +5,11 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import connectPgSimple from 'connect-pg-simple';
 import cors from 'cors';
-import rateLimiter from './middleware/rate_limiter';
+// import rateLimiter from './middleware/rate_limiter';
 import authRouter from './routes/auth';
 import errorHandler from './middleware/error_middleware';
-import './@types/express-session' // add type extension for express-session module to support adding data to session
 import './config/passport'; // Passport configuration
+import testRouter from './routes/test';
 
 dotenv.config(); // Load environment variables
 
@@ -19,13 +19,13 @@ const sessionStore = connectPgSimple(session);
 
 // Middleware to handle CORS
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:5173/',
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     allowedHeaders: ['Content-Type'],
 }));
 
-// Middleware to handle rate limiting
-app.use(rateLimiter);
+// // Middleware to handle rate limiting
+// app.use(rateLimiter);
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
@@ -59,7 +59,8 @@ app.use(passport.session());
 
 
 // ROUTING
-app.use('/api/v1/auth', authRouter) // authentication routes
+app.use('/api/v1/', authRouter) // authentication routes
+app.use('/api/v1/', testRouter) // testing logout routes
 
 
 // Error handling middleware

@@ -9,7 +9,7 @@ const prisma = new PrismaClient()
 
 // passport strategy to authenticate user - local strategy
 passport.use(new LocalStrategy(({
-    usernameField: 'username', // defines the field in the request body that represents the username
+    usernameField: 'email', // defines the field in the request body that represents the email
     passwordField: 'password' // defines the field in the request body that represents the username
     
     // By default, passport local strategy expects the field names to be username and password

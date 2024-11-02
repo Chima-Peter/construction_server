@@ -8,7 +8,7 @@ const validateSignUp = [
     .withMessage("First name field can't be empty")
     .trim()
     .isLength({ min: 2 })
-    .withMessage("First name can't be just two character")
+    .withMessage("Minimum allowed for a name is 2 characters.")
     .custom((value) => {
         if (!/^[A-Za-z\s]+$/.test(value)) {
             throw new HttpError('First name can contain only alphabets', 400)
@@ -21,7 +21,7 @@ const validateSignUp = [
     .withMessage("Last name field can't be empty")
     .trim()
     .isLength({ min: 2 })
-    .withMessage("Last name can't be just two character")
+    .withMessage("Minimum allowed for a name is 2 characters.")
     .custom((value) => {
         if (!/^[A-Za-z\s]+$/.test(value)) {
             throw new HttpError('Last name can contain only alphabets', 400)
@@ -38,7 +38,7 @@ const validateSignUp = [
 
     body('password')
     .notEmpty()
-    .withMessage("Password can't be empty")
+    .withMessage("Password field can't be empty")
     .trim()
     .isLength({ min: 8 })
     .withMessage('Password must be at least 8 characters')

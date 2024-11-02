@@ -2,13 +2,22 @@ import nodemailer from 'nodemailer'
 import dotenv from "dotenv"
 import { Request, Response, NextFunction } from 'express'
 import { SendMailType } from '../@types/middleware_types'
+import checkEmail from '../prisma_queries/check_email'
 
 dotenv.config() // load env variables
 
 // create a middleware factory so we can control the type of subject, content and template for the email content
 const sendMail = ({subject, content, successMsg, errorMsg} : SendMailType)  => {
     // middleware to send mail to user's email
-    return (req: Request, res: Response, next: NextFunction) => {
+    return async (req: Request, res: Response, next: NextFunction) : Promise<any> => {
+
+        // check if email exists
+        const emailCheck = await checkEmail(req.body.email)
+        if (!emailCheck) {
+            return res.status(400).json({
+                responseMsg: "There's no valid user for this email!"
+            })
+        }
 
         // set up email transporter
         const transporter = nodemailer.createTransport({
