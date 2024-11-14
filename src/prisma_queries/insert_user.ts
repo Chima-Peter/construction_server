@@ -13,7 +13,7 @@ const insertUser = async (body: any) => {
                 lastname: body.lastname,
                 email: body.email,
                 password: await bcrypt.hash(body.password, 10), // hash password
-                role: "ADMIN"
+                role: "USER"
             },
         });
         return newUser;

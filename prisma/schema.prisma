@@ -16,6 +16,13 @@ model User {
   role      Role
 }
 
+
+model Project {
+  id        Int    @id @default(autoincrement())
+  name      String
+  
+}
+
 enum Role {
   USER
   ADMIN

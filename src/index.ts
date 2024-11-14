@@ -57,6 +57,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use((req, _res, next) => {
+    console.log(req.ip)
+    console.log(req.headers['X-Forwarded-to'])
+    next()
+})
 
 // ROUTING
 app.use('/api/v1/', authRouter) // authentication routes
