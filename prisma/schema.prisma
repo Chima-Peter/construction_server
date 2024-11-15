@@ -7,24 +7,90 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int    @id @default(autoincrement())
-  firstname String
-  lastname  String
-  email     String @unique
-  password  String
-  role      Role
-}
-
-
-model Project {
-  id        Int    @id @default(autoincrement())
-  name      String
-  
-}
-
 enum Role {
   USER
   ADMIN
   GUEST
+}
+
+enum Status {
+  NOT_STARTED
+  PLANNING
+  IN_PROGRESS
+  NEAR_COMPLETION
+  COMPLETE
+  PAUSED
+  CANCELLED
+}
+
+model Resources {
+  id        Int    @id @default(autoincrement())
+  name      String
+  units     String
+  spent     String
+  quantity  String
+
+  details   ResourceDetails? @relation(fields: [id], references: [id])
+}
+
+model BudgetResources {
+  id        Int    @id @default(autoincrement())
+  name      String
+  units     String
+  spent     String
+
+  details   BudgetDetails? @relation(fields: [id], references: [id])
+}
+
+model User {
+  id          Int    @id @default(autoincrement())
+  firstname   String
+  lastname    String
+  email       String @unique
+  password    String
+  role        Role
+
+}
+
+model Project {
+  id            Int    @id @default(autoincrement())
+
+
+  projectDetails  ProjectDetails? 
+  resourceDetails ResourceDetails?  // Optional relation to ResourceDetails
+  budgetDetails   BudgetDetails?    // Optional relation to BudgetDetails
+
+}
+
+model ProjectDetails {
+  id              Int             @id @default(autoincrement())
+  name            String          @unique
+  manager         String
+  progress        Int
+  status          Status
+  startDate       DateTime
+  endDate         DateTime
+  keyDetails      String[]
+  milestones      String[]
+
+  projectID   Int             @unique
+  project     Project         @relation(fields: [projectID], references: [id])
+}
+
+model ResourceDetails {
+  id          Int             @id @default(autoincrement())
+  projectID   Int             @unique
+  project     Project         @relation(fields: [projectID], references: [id])
+  resources   Resources[]     // One-to-many relation to Resources
+}
+
+model BudgetDetails {
+  id          Int             @id @default(autoincrement())
+  totalBudget String
+  quantity    String
+  resources   BudgetResources[]        // One-to-many relation to Budget
+
+
+  projectID   Int             @unique
+  project     Project         @relation(fields: [projectID], references: [id])
 }

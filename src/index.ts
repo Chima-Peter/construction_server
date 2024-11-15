@@ -10,6 +10,7 @@ import authRouter from './routes/auth';
 import errorHandler from './middleware/error_middleware';
 import './config/passport'; // Passport configuration
 import testRouter from './routes/test';
+import addRouter from './routes/add';
 
 dotenv.config(); // Load environment variables
 
@@ -64,8 +65,9 @@ app.use((req, _res, next) => {
 })
 
 // ROUTING
-app.use('/api/v1/', authRouter) // authentication routes
-app.use('/api/v1/', testRouter) // testing logout routes
+app.use('/api/v1', authRouter) // authentication routes
+app.use('/api/v1', testRouter) // testing logout routes
+app.use('/api/v1', addRouter) // adding project route
 
 
 // Error handling middleware

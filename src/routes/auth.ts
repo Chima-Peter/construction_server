@@ -12,7 +12,7 @@ import checkInputValidation from '../middleware/check_input_validation'
 import htmlContent from '../utils/email_layout'
 import validatePasswordReset from '../utils/auth/validate_password_reset'
 import resetPassword from '../prisma_queries/reset_password'
-import checkRequestBody from '../middleware/checkRequestBody'
+import checkRequestBody from '../middleware/check_request_body'
 
 // Set up routing from auth
 const authRouter = express.Router()
