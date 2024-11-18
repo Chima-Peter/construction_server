@@ -9,8 +9,9 @@ const viewRouter = express.Router()
 // route to view all projects or view projects based on filters
 viewRouter.get('/read', CheckAuthenticated, checkViewRequestBody, async (req: Request, res: Response, _next: NextFunction) => {
     // collect all search fields in request params
-    const { id, status, manager, startDate, endDate, progress } = req.query;
+    const { id, status, manager, startDate, endDate, progress, page, limit } = req.query;
     const filters: any = {};
+    const pagination: any = {};
 
     if (id) filters.id = id;
     if (status) filters.status = status;
@@ -18,7 +19,11 @@ viewRouter.get('/read', CheckAuthenticated, checkViewRequestBody, async (req: Re
     if (startDate && endDate) filters.startDate = { gte: startDate, lte: endDate };
     if (progress) filters.progress = { gte: progress };
 
-    res.json(await getAllProjects(filters))
+    // add pagination parameters if provided
+    if (page) pagination.page = page;
+    if (limit) pagination.limit = limit;
+
+    res.json(await getAllProjects(filters, pagination))
 })
 
 

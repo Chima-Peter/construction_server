@@ -13,6 +13,8 @@ const checkViewRequestBody = (req: Request, _res: Response, next: NextFunction) 
         'progress': 'number',
         'startDate': 'string',
         'endDate': 'string',
+        'page': 'number',
+        'limit': 'number',
     }
     const temp = req.query
 
