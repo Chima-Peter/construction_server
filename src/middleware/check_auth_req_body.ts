@@ -7,14 +7,14 @@ type requestType = {
 }
 
 // validate the request body
-const checkRequestBody = (requiredFields: requestType[]) => {
+const checkAuthRequestBody = (requiredFields: requestType[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     const requestBody = req.body
 
     // check if all required fields are present in the request body then either send to error middleware
     for (const field of requiredFields) {
       if (!requestBody[field.value]) {
-        const error = new HttpError(`Missing required field: ${field.value}`, 400)
+        const error = new HttpError(`Missing required field: '${field.value}'`, 400)
         return next(error)
       }
     }
@@ -22,4 +22,4 @@ const checkRequestBody = (requiredFields: requestType[]) => {
   }
 }
 
-export default checkRequestBody
+export default checkAuthRequestBody

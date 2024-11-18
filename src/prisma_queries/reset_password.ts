@@ -19,7 +19,7 @@ const resetPassword = async (email: string, newPassword: string) => {
         
     } catch (error) {
         // throw the error to the error-handling middleware
-        throw new Error("An error occurred while resetting password. Please try again later.");
+        throw new Error("An error occurred while resetting password. ");
     }
 }
 

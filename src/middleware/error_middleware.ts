@@ -11,6 +11,7 @@ const errorHandler = (err: Error, _req: Request, res: Response, _next: NextFunct
             status: 400
         })
     }
+    
     // Check if the error is an instance of HttpError
     else if (err instanceof HttpError) {
         // Set the status code from the HttpError

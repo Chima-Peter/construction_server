@@ -2,20 +2,20 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient()
 
-// check if project name exists
-const checkProjectName = async (name: string) => {
+// check if project exists
+const checkProject = async (filters: any) => {
     try {
         const projectName = await prisma.projectDetails.findFirst({
             where: {
-                name: name
+                ...filters
             }
         })
-         // return true if name exists, else false
+         // return true if field exists, else false
 
         return !!projectName
     } catch (error) {
         // throw the error to the error-handling middleware
-        throw new Error('An error occurred during authentication. Please try again later.');
+        throw new Error('An error occurred while checking project. Please try again later.');
     }
 }
-export default checkProjectName
+export default checkProject

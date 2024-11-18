@@ -16,10 +16,10 @@ const insertUser = async (body: any) => {
                 role: "USER"
             },
         });
-        return newUser;
+        return newUser
     } catch(err) {
         // throw the error to the error-handling middleware
-        throw new Error("An error occurred while creating user. Please try again later.");
+        throw new Error("An error occurred while creating user. ");
     }
 }
 

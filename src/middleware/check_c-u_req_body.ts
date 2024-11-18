@@ -1,8 +1,8 @@
 import { Request, Response,  NextFunction } from "express"
 import HttpError from "../config/http_error"
-import CheckProjectDetails from "../utils/check_req_body/check_project_details"
-import CheckResources from "../utils/check_req_body/check_resources"
-import CheckBudget from "../utils/check_req_body/check_budget"
+import CheckProjectDetails from "../utils/check_c-u_req_body/check_project_details"
+import CheckResources from "../utils/check_c-u_req_body/check_resources"
+import CheckBudget from "../utils/check_c-u_req_body/check_budget"
 
 
 // validate the request body

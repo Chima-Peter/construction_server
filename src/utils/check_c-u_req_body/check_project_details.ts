@@ -16,7 +16,6 @@ const CheckProjectDetails = (requestBody: ProjectDetailsTypes) => {
         'milestones': 'array',
         'cancellationReason': 'string',
         'pauseReason': 'string'
-
     }
 
     // variable of all fields
@@ -46,7 +45,7 @@ const CheckProjectDetails = (requestBody: ProjectDetailsTypes) => {
         if (!requiredFields) {
             return {
             responseCode: false,
-            responseMsg: `Invalid status: ${requestBody.status}`,
+            responseMsg: `Invalid status: '${requestBody.status}'`,
             };
         }
 
@@ -61,7 +60,7 @@ const CheckProjectDetails = (requestBody: ProjectDetailsTypes) => {
             if (fieldValue === undefined || fieldValue === null) {
                 return {
                     responseCode: false,
-                    responseMsg: `Missing field ${requiredField}, which is a required field for status: ${requestBody.status}`
+                    responseMsg: `Missing field '${requiredField}', which is a required field for status: '${requestBody.status}'`
                 }
             }
 
@@ -69,7 +68,7 @@ const CheckProjectDetails = (requestBody: ProjectDetailsTypes) => {
             if (expectedType === 'string' && typeof fieldValue !== 'string') {
                 return {
                     responseCode: false,
-                    responseMsg: `Project field ${requiredField} must be a string`
+                    responseMsg: `Project field '${requiredField}' must be a string`
                 }
             }
 
@@ -77,7 +76,7 @@ const CheckProjectDetails = (requestBody: ProjectDetailsTypes) => {
                 if (expectedType === 'number' && typeof fieldValue !== 'number') {
                 return {
                     responseCode: false,
-                    responseMsg: `Project field ${requiredField} must be a number`
+                    responseMsg: `Project field '${requiredField}' must be a number`
                 }
             }
 
@@ -85,7 +84,7 @@ const CheckProjectDetails = (requestBody: ProjectDetailsTypes) => {
                 if (expectedType === 'array' && !Array.isArray(fieldValue)) {
                 return {
                     responseCode: false,
-                    responseMsg: `Project field ${requiredField} must be an array`
+                    responseMsg: `Project field '${requiredField}' must be an array`
                 }
             }
             // check that keydetails they can't be empty
@@ -109,7 +108,7 @@ const CheckProjectDetails = (requestBody: ProjectDetailsTypes) => {
                 if (expectedType === 'string' && typeof fieldValue !== 'string') {
                     return {
                         responseCode: false,
-                        responseMsg: `Project field ${requiredField} must be a string`
+                        responseMsg: `Project field '${requiredField}' must be a string`
                     }
                 }
 
@@ -117,14 +116,14 @@ const CheckProjectDetails = (requestBody: ProjectDetailsTypes) => {
                     if (expectedType === 'number' && typeof fieldValue !== 'number') {
                         return {
                             responseCode: false,
-                            responseMsg: `Project field ${requiredField} must be a number`
+                            responseMsg: `Project field '${requiredField}' must be a number`
                         }
                     }
                     // check field values of type array
                     if (expectedType === 'array' && !Array.isArray(fieldValue)) {
                         return {
                             responseCode: false,
-                            responseMsg: `Project field ${requiredField} must be an array`
+                            responseMsg: `Project field '${requiredField}' must be an array`
                         }
                     }
                     // check that keydetails they can't be empty

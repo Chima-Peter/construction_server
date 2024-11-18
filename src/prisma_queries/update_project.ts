@@ -4,11 +4,14 @@ import { Project } from "../@types/add_project_types";
 const prisma = new PrismaClient();
 
 // Add project to the database
-const AddProject = async (project: Project) => {
+const EditProject = async (id: number, project: Project) => {
     try {
-        // Use the `create` method of Prisma Client to add a new project with nested relations
+        // update the project
         // store empty values if the user doesn't provide them. Only for optional fields tho, user must provide required fields.
-        const newProject = await prisma.projectDetails.create({
+        await prisma.projectDetails.update({
+            where: {
+                id: id
+            },
             data: {
                 name: project.projectDetails.name,
                 manager: project.projectDetails.manager,
@@ -22,28 +25,30 @@ const AddProject = async (project: Project) => {
                 pauseReason: project.projectDetails.pauseReason || "",
                 userId: project.projectDetails.userId,
                 budgetDetails: {
-                    create: {
+                    update: {
                         estimated: project.budget.estimated || 0,
                         spent: project.budget.spent || 0,
                         remaining: project.budget.remaining || 0,
                     },
                 },
                 resourceDetails: {
-                    create: project.resources.map((resource) => ({
-                        type: resource.type || '',
-                        quantity: resource.quantity || 0,
-                        cost: resource.cost || 0,
-                        unit: resource.unit || '',
+                    updateMany: project.resources.map((resource) => ({
+                        where: {
+                            projectID: id
+                        },
+                        data: {
+                            type: resource.type || '',
+                            quantity: resource.quantity || 0,
+                            cost: resource.cost || 0,
+                            unit: resource.unit || '',
+                        }
                     })),
                 },
             },
         });
-
-        return newProject; // Return the newly created project
     } catch (error) {
-        console.error("Error adding project:", error);
-        throw new Error("Failed to add project");
+        throw new Error("An error occurred while updating project");
     }
 };
 
-export default AddProject;
+export default EditProject;

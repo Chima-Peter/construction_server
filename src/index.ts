@@ -5,12 +5,13 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import connectPgSimple from 'connect-pg-simple';
 import cors from 'cors';
-// import rateLimiter from './middleware/rate_limiter';
 import authRouter from './routes/auth';
 import errorHandler from './middleware/error_middleware';
 import './config/passport'; // Passport configuration
-import testRouter from './routes/test';
-import addRouter from './routes/add';
+import addRouter from './routes/project/create';
+import viewRouter from './routes/project/read';
+import editRouter from './routes/project/update';
+import deleteRouter from './routes/project/delete';
 
 dotenv.config(); // Load environment variables
 
@@ -24,9 +25,6 @@ app.use(cors({
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     allowedHeaders: ['Content-Type'],
 }));
-
-// // Middleware to handle rate limiting
-// app.use(rateLimiter);
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
@@ -58,16 +56,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, _res, next) => {
-    console.log(req.ip)
-    console.log(req.headers['X-Forwarded-to'])
-    next()
-})
 
 // ROUTING
 app.use('/api/v1', authRouter) // authentication routes
-app.use('/api/v1', testRouter) // testing logout routes
-app.use('/api/v1', addRouter) // adding project route
+app.use('/api/v1/project', addRouter) // creating a project route
+app.use('/api/v1/project', viewRouter) // reading project route
+app.use('/api/v1/project', editRouter) // updating a project route
+app.use('/api/v1/project', deleteRouter) // deleting a project route
 
 
 // Error handling middleware

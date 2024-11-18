@@ -13,7 +13,7 @@ const checkEmail = async (email: string) => {
         return !!dbEmail // return true if email exists, else false
     } catch (error) {
         // throw the error to the error-handling middleware
-        throw new Error('An error occurred during authentication. Please try again later.');
+        throw new Error('An error occurred while checking user email.');
     }
 }
 

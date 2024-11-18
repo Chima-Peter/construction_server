@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express'
 import validateSignUp from '../utils/auth/validate_signup'
-import insertUser from '../prisma_queries/insert_user'
+import insertUser from '../prisma_queries/create_user'
 import checkEmail from '../prisma_queries/check_email'
 import validateSignIn from '../utils/auth/validate_signin'
 import passport from 'passport'
@@ -12,13 +12,13 @@ import checkInputValidation from '../middleware/check_input_validation'
 import htmlContent from '../utils/email_layout'
 import validatePasswordReset from '../utils/auth/validate_password_reset'
 import resetPassword from '../prisma_queries/reset_password'
-import checkRequestBody from '../middleware/check_request_body'
+import checkAuthRequestBody from '../middleware/check_auth_req_body'
 
 // Set up routing from auth
 const authRouter = express.Router()
 
 // User signup route - check that request body contains all fields, then input is validated, then checked for errors before any other operations.
-authRouter.post('/signup', checkRequestBody([
+authRouter.post('/signup', checkAuthRequestBody([
     {value: 'firstname'},
     {value: 'lastname'},
     {value: 'email'},
@@ -42,14 +42,15 @@ authRouter.post('/signup', checkRequestBody([
             return next(error);
         }
         return res.status(201).json({
-            responseMsg: 'Successfully signed in'
+            responseMsg: 'Successfully signed in',
+            userId: user.id
         })
     })
 })
 
 
 // user login route - check that request body is correct, then input is validated, then checked for errors before any other operations.
-authRouter.post('/login', checkRequestBody([
+authRouter.post('/login', checkAuthRequestBody([
     {value: 'email'},
     {value: 'password'},
 ]), validateSignIn, checkInputValidation, (req: Request, res: Response, next: NextFunction) : void => {
@@ -74,7 +75,8 @@ authRouter.post('/login', checkRequestBody([
                 return next(error);
             }
             return res.json({
-                responseMsg: 'Successfully signed in'
+                responseMsg: 'Successfully signed in',
+                userId: user.id
             })
         });
     })(req, res, next)
@@ -96,7 +98,7 @@ authRouter.get('/logout', (req: Request, res: Response, next: NextFunction) => {
 
 
 // user send email route. check for request body, input is validated, then checked for errors before any other operations.
-authRouter.post('/forgot-password', checkRequestBody([
+authRouter.post('/forgot-password', checkAuthRequestBody([
     {value: 'email'},
 ]), validateSendMail, checkInputValidation, sendMail({
     subject: 'Password Reset Link', // controlling the values we pass to send mail
@@ -107,7 +109,7 @@ authRouter.post('/forgot-password', checkRequestBody([
 
 
 // user forgot password route - check for request body, input is validated, then checked for errors before any other operations.
-authRouter.put('/reset-password', checkRequestBody([
+authRouter.put('/reset-password', checkAuthRequestBody([
     {value: 'email'},
     {value: 'password'},
     {value: 'confirm-password'}

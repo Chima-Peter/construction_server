@@ -136,7 +136,6 @@ This API provides endpoints for user authentication and password management for 
 
 - This API has a rate limit of 100 requests per 15 minutes to prevent abuse.
 
-
 <!-- DB_HOST=localhost
 DB_PASSWORD=Password@1
 DB_USER=postgres
@@ -145,6 +144,6 @@ DB_NAME=construction
 SECRET=MySecureSecret
 
 EMAIL=chimmypeters@gmail.com
-EMAIL_PASS=ihzffrfitltdatkg
+EMAIL_PASS=patrick
 
 DATABASE_URL=`postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}` -->

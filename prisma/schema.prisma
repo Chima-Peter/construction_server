@@ -53,7 +53,7 @@ model ResourceDetails {
 
 
   projectID   Int             
-  project     ProjectDetails   @relation(fields: [projectID], references: [id])
+  project     ProjectDetails   @relation(fields: [projectID], references: [id], onDelete: Cascade)
 }
 
 model BudgetDetails {
@@ -63,5 +63,5 @@ model BudgetDetails {
   remaining   Decimal
 
   projectID   Int             @unique
-  project     ProjectDetails  @relation(fields: [projectID], references: [id])
+  project     ProjectDetails  @relation(fields: [projectID], references: [id], onDelete: Cascade)
 }

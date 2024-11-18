@@ -43,7 +43,7 @@ const CheckResources = (status: string, resources?: ResourceTypes[]) => {
           if (fieldValue === undefined || fieldValue === null) {
             return {
                 responseCode: false,
-                responseMsg: `Missing resource field ${field}.`
+                responseMsg: `Missing resource field '${field}'.`
               }
           }
 
@@ -51,7 +51,7 @@ const CheckResources = (status: string, resources?: ResourceTypes[]) => {
           if (expectedType === 'string' && typeof fieldValue !== 'string') {
               return {
                   responseCode: false,
-                  responseMsg: `Field ${fieldValue} must be a string`
+                  responseMsg: `Field '${fieldValue}' must be a string`
               }
           }
 
@@ -59,7 +59,7 @@ const CheckResources = (status: string, resources?: ResourceTypes[]) => {
               if (expectedType === 'number' && typeof fieldValue !== 'number') {
               return {
                   responseCode: false,
-                  responseMsg: `Field ${fieldValue} must be a number`
+                  responseMsg: `Field '${fieldValue}' must be a number`
               }
           }
         }

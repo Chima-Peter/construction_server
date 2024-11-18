@@ -27,13 +27,13 @@ const CheckBudget = (status: string, budget?: BudgetTypes) => {
         if (fieldValue === undefined || fieldValue === null) {
             return {
                 responseCode: false,
-                responseMsg: `Budget field ${field} is missing.`
+                responseMsg: `Budget field '${field}' is missing.`
             }
         }
         if (typeof fieldValue !== 'number') {
             return {
                 responseCode: false,
-                responseMsg: `Budget field ${field} must be a number.`
+                responseMsg: `Budget field '${field}' must be a number.`
             }
         }
     }
