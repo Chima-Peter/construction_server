@@ -41,6 +41,19 @@ const checkViewRequestBody = (req: Request, _res: Response, next: NextFunction) 
             temp[query] = parsedValue as any // assign the parsed number to the query
         }
     }
+
+    // check that page and limit are positive integers
+    const page = temp['page'] as any
+    const limit = temp['limit'] as any
+
+    if (page && page <= 0) {
+        const error = new HttpError('Page must be a positive integer', 400)
+        return next(error)
+    }
+    if (limit && limit <= 0) {
+        const error = new HttpError('Limit must be a positive integer', 400)
+        return next(error)
+    }
     req.query = temp // update req.query with validated values
     next()
 }

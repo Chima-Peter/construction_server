@@ -43,16 +43,16 @@ const getAllProjects = async (filters: any, pagination: any) => {
         })
 
         // get total number of projects so we can calculate total pages
-        const totalCount = await prisma.projectDetails.count({ where: {...filters } })
+        const totalRecords = await prisma.projectDetails.count({ where: {...filters } })
         
         // return project details, current page, total pages, and total count of projects
         return {
             data: projectDetails,
             currentPage: page,
             totalPages: Math.ceil(
-                totalCount / limit
+                totalRecords / limit
             ),
-            totalCount
+            totalRecords
         }        
     } catch (error) {
         throw new Error('An error occurred while getting projects')
