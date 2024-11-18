@@ -12,30 +12,27 @@ const checkAddProjectRequestBody = (req: Request, _res: Response, next: NextFunc
     // run the check for correct project request body parameters
     const checkProject = CheckProjectDetails(requestBody['projectDetails'])
 
-    // if check failed, then pass error to error handling middleware
     if (!checkProject.responseCode) {
         const error = new HttpError(checkProject.responseMsg || '', 400)
         return next(error)
     }
 
-    // only validate resources and budgets for status: in progress, near completion and completed
-    if (requestBody.projectDetails) {
 
-        // check resources first
-        const checkResources = CheckResources(requestBody['resources'])
+    // run the check for correct resources request body parameters
+    const checkResources = CheckResources(requestBody['status'], requestBody['resources'])
 
-        if (!checkResources.responseCode) {
-            const error = new HttpError(checkResources.responseMsg || '', 400)
-            return next(error)
-        }
+    if (!checkResources.responseCode) {
+        const error = new HttpError(checkResources.responseMsg || '', 400)
+        return next(error)
+    }
 
-        // check budget next
-        const checkBudget = CheckBudget(requestBody['budget'])
 
-        if (!checkBudget.responseCode) {
-            const error = new HttpError(checkBudget.responseMsg || '', 400)
-            return next(error)
-        }
+    // run the check for correct budget request body parameters
+    const checkBudget = CheckBudget(requestBody['status'],requestBody['budget'])
+
+    if (!checkBudget.responseCode) {
+        const error = new HttpError(checkBudget.responseMsg || '', 400)
+        return next(error)
     }
     next() // if no error, pass to next middleware
 }

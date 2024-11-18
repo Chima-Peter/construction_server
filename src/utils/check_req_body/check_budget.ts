@@ -1,23 +1,39 @@
-import { BudgetFields, BudgetTypes } from "../../@types/add_project_types";
-import CheckBudgetResources from "./check_budget_resources";
+import { BudgetTypes } from "../../@types/add_project_types";
 
-const CheckBudget = (budget: BudgetTypes) => {
-    // check parameters for budget
-    if (budget) {
-        for (const field of BudgetFields) {
-            if (!budget[field]) {
-                return {
-                    responseCode: false,
-                    responseMsg: `Missing required field in budget: ${field}`
-                }
-            }
+const CheckBudget = (status: string, budget?: BudgetTypes) => {
+    const budgetFields = ['estimated', 'spent', 'remaining']
+
+    // budget not required for NOT_STARTED
+    if (status === 'NOT_STARTED' && budget === undefined) {
+        return {
+            responseCode: true,
+            responseMsg: "NOT_STARTED doesn't require budget details."
         }
-        const checkResources = CheckBudgetResources(budget.resources)
+    }
 
-        if (!checkResources.responseCode) {
+     // For other statuses, ensure budget exists
+    if (!budget) {
+        return {
+            responseCode: false,
+            responseMsg: "Budget details are missing.",
+        };
+    }
+
+    // if budget exists both for NOT_STARTED and OTHER status
+    for (const field of budgetFields) {
+        const fieldValue = budget[field as keyof BudgetTypes]
+
+        // check if field value exits
+        if (fieldValue === undefined || fieldValue === null) {
             return {
                 responseCode: false,
-                responseMsg: checkResources.responseMsg
+                responseMsg: `Budget field ${field} is missing.`
+            }
+        }
+        if (typeof fieldValue !== 'number') {
+            return {
+                responseCode: false,
+                responseMsg: `Budget field ${field} must be a number.`
             }
         }
     }

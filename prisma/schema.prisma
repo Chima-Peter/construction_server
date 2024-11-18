@@ -13,34 +13,6 @@ enum Role {
   GUEST
 }
 
-enum Status {
-  NOT_STARTED
-  PLANNING
-  IN_PROGRESS
-  NEAR_COMPLETION
-  COMPLETE
-  PAUSED
-  CANCELLED
-}
-
-model Resources {
-  id        Int    @id @default(autoincrement())
-  name      String
-  units     String
-  spent     String
-  quantity  String
-
-  details   ResourceDetails? @relation(fields: [id], references: [id])
-}
-
-model BudgetResources {
-  id        Int    @id @default(autoincrement())
-  name      String
-  units     String
-  spent     String
-
-  details   BudgetDetails? @relation(fields: [id], references: [id])
-}
 
 model User {
   id          Int    @id @default(autoincrement())
@@ -52,45 +24,44 @@ model User {
 
 }
 
-model Project {
-  id            Int    @id @default(autoincrement())
-
-
-  projectDetails  ProjectDetails? 
-  resourceDetails ResourceDetails?  // Optional relation to ResourceDetails
-  budgetDetails   BudgetDetails?    // Optional relation to BudgetDetails
-
-}
-
 model ProjectDetails {
   id              Int             @id @default(autoincrement())
   name            String          @unique
   manager         String
   progress        Int
-  status          Status
-  startDate       DateTime
-  endDate         DateTime
+  status          String
+  startDate       String
+  endDate         String
   keyDetails      String[]
   milestones      String[]
+  createdAt       DateTime          @default(now()) 
+  updatedAt       DateTime          @updatedAt()
+  cancellationReason String 
+  pauseReason      String
+  userId          Int?
 
-  projectID   Int             @unique
-  project     Project         @relation(fields: [projectID], references: [id])
+  resourceDetails ResourceDetails[]  // relation to ResourceDetails
+  budgetDetails   BudgetDetails?      // relation to BudgetDetails
 }
 
 model ResourceDetails {
   id          Int             @id @default(autoincrement())
-  projectID   Int             @unique
-  project     Project         @relation(fields: [projectID], references: [id])
-  resources   Resources[]     // One-to-many relation to Resources
+  type        String   // type of the resource
+  quantity    Int      // quantity of the resource
+  cost        Int      // cost of the resource
+  unit        String   // unit of measurement for resource
+
+
+  projectID   Int             
+  project     ProjectDetails   @relation(fields: [projectID], references: [id])
 }
 
 model BudgetDetails {
-  id          Int             @id @default(autoincrement())
-  totalBudget String
-  quantity    String
-  resources   BudgetResources[]        // One-to-many relation to Budget
-
+  id          Int               @id @default(autoincrement())
+  estimated   Decimal 
+  spent       Decimal
+  remaining   Decimal
 
   projectID   Int             @unique
-  project     Project         @relation(fields: [projectID], references: [id])
+  project     ProjectDetails  @relation(fields: [projectID], references: [id])
 }

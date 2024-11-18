@@ -1,7 +1,35 @@
-import { Not_Started, Planning, Paused, Cancelled, Others, ProjectDetailsTypes, Status } from "../../@types/add_project_types"
+import { ProjectDetailsTypes } from "../../@types/add_project_types"
 
+// Function to validate project details based on status
 const CheckProjectDetails = (requestBody: ProjectDetailsTypes) => {
-    let requiredFields = []
+
+    // all required fields in project details
+    const allRequiredFields = {
+        'name': 'string',
+        'manager': 'string',
+        'status': 'string',
+        'userId': 'number',
+        'progress': 'number',
+        'startDate': 'string',
+        'endDate': 'string',
+        'keyDetails': 'array',
+        'milestones': 'array',
+        'cancellationReason': 'string',
+        'pauseReason': 'string'
+
+    }
+
+    // variable of all fields
+    const searchFields = ['name', 'manager', 'status', 'progress', 'startDate', 'endDate', 'keyDetails', 'milestones', 'createdAt', 'userId']
+
+
+    // array to holding all fields based on status
+    const allFields = {
+        'NOT_STARTED': ['name', 'manager', 'status', 'userId'],
+        'IN_PROGRESS': ['name', 'manager', 'status', 'userId', 'progress', 'startDate', 'endDate', 'keyDetails', 'milestones'],
+        'NEAR_COMPLETION': ['name', 'manager', 'status', 'userId', 'progress', 'startDate', 'endDate', 'keyDetails', 'milestones'],
+        'COMPLETED': ['name', 'manager', 'status', 'userId', 'progress', 'startDate', 'endDate', 'keyDetails', 'milestones'],
+    }
 
         // check if status exists in request body
         if (!requestBody.status) {
@@ -11,51 +39,113 @@ const CheckProjectDetails = (requestBody: ProjectDetailsTypes) => {
             }
         }
 
-         // determine the fields to validate based on the status
-        switch (requestBody.status) {
-          case Status.NotStarted:
-            requiredFields = Not_Started as (keyof ProjectDetailsTypes)[];
-            break;
-          case Status.Planning:
-            requiredFields = Planning as (keyof ProjectDetailsTypes)[];
-            break;
-          case Status.Cancelled:
-            requiredFields = Paused as (keyof ProjectDetailsTypes)[];
-            break;
-          case Status.Paused:
-            requiredFields = Cancelled as (keyof ProjectDetailsTypes)[];
-            break;
-          default:
-            requiredFields = Others as (keyof ProjectDetailsTypes)[];
-            break;
-        }
-        
+        // Get the required fields for the status
+        const requiredFields = allFields[requestBody.status as keyof typeof allFields];
 
-    // check that all project details fields are present in request body, else return an error
-    for (const field of requiredFields) {
-        if (!requestBody[field]) {
+        // check if status is invalid
+        if (!requiredFields) {
             return {
-                responseCode: false,
-                responseMsg: `Missing required field in project request body: ${field}`
-            }
+            responseCode: false,
+            responseMsg: `Invalid status: ${requestBody.status}`,
+            };
         }
-    }
 
-    // validate project details and milestones if status !== CANCELLED or NOT STARTED
-    if (requestBody.status !== Status.Cancelled && requestBody.status !== Status.NotStarted) {
-        if (requestBody.keyDetails.length <= 0) {
-            return {
-                responseCode: false,
-                responseMsg: 'Project key details are required'
+    // if status exists,
+    for (const requiredField of searchFields) {
+        const fieldValue = requestBody[requiredField as keyof ProjectDetailsTypes]
+        const expectedType = allRequiredFields[requiredField as keyof typeof allRequiredFields]
+
+        // check all fields that are required for status
+        if (requiredFields.includes(requiredField)) {
+            // check if field value exists for required fields on that status
+            if (fieldValue === undefined || fieldValue === null) {
+                return {
+                    responseCode: false,
+                    responseMsg: `Missing field ${requiredField}, which is a required field for status: ${requestBody.status}`
+                }
             }
-        }  
-        if (requestBody.milestones.length <= 0) {
-            return {
-                responseCode: false,
-                responseMsg: 'Project milestones are required'
+
+            // check field values of type string
+            if (expectedType === 'string' && typeof fieldValue !== 'string') {
+                return {
+                    responseCode: false,
+                    responseMsg: `Project field ${requiredField} must be a string`
+                }
+            }
+
+                // check field values of type number
+                if (expectedType === 'number' && typeof fieldValue !== 'number') {
+                return {
+                    responseCode: false,
+                    responseMsg: `Project field ${requiredField} must be a number`
+                }
+            }
+
+                // check field values of type array
+                if (expectedType === 'array' && !Array.isArray(fieldValue)) {
+                return {
+                    responseCode: false,
+                    responseMsg: `Project field ${requiredField} must be an array`
+                }
+            }
+            // check that keydetails they can't be empty
+            if (requestBody.keyDetails.length === 0) {
+                return {
+                    responseCode: false,
+                    responseMsg: `Project field keyDetails can't be empty.`
+                }
+            }
+            // check that milestones they can't be empty
+            if (requestBody.milestones.length === 0) {
+                return {
+                    responseCode: false,
+                    responseMsg: `Project field milestones can't be empty.`
+                }
+            }
+        } else {
+            // check for fields that user might add to request body only if they exist
+            if (fieldValue !== undefined && fieldValue !== null) {
+                // check field values of type string
+                if (expectedType === 'string' && typeof fieldValue !== 'string') {
+                    return {
+                        responseCode: false,
+                        responseMsg: `Project field ${requiredField} must be a string`
+                    }
+                }
+
+                    // check field values of type number
+                    if (expectedType === 'number' && typeof fieldValue !== 'number') {
+                        return {
+                            responseCode: false,
+                            responseMsg: `Project field ${requiredField} must be a number`
+                        }
+                    }
+                    // check field values of type array
+                    if (expectedType === 'array' && !Array.isArray(fieldValue)) {
+                        return {
+                            responseCode: false,
+                            responseMsg: `Project field ${requiredField} must be an array`
+                        }
+                    }
+                    // check that keydetails they can't be empty
+                    if (requestBody.keyDetails.length === 0) {
+                        return {
+                            responseCode: false,
+                            responseMsg: `Project field keyDetails can't be empty.`
+                        }
+                    }
+                    // check that milestones they can't be empty
+                    if (requestBody.milestones.length === 0) {
+                        return {
+                            responseCode: false,
+                            responseMsg: `Project field milestones can't be empty.`
+                        }
+                    }
+                }        
             }
         }
-    }
+
+    // if all fields are valid, return true
     return {
         responseCode: true,
         responseMsg: 'Project details are valid'
